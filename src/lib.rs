@@ -54,13 +54,6 @@ impl WidgetRef for StatusBar<'_> {
             return;
         }
 
-        buf.set_span(
-            area.left(),
-            area.top(),
-            &Span::from(" ".repeat(area.width as usize)),
-            area.width,
-        );
-
         let mut start_x = area.left();
 
         for (i, section) in self.sections.iter().enumerate() {
