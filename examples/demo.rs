@@ -14,10 +14,13 @@ fn main() -> color_eyre::Result<()> {
 
     terminal.draw(|frame| {
         let area = frame.size();
+        let [bottom] = Layout::vertical([Constraint::Length(1)])
+            .flex(layout::Flex::End)
+            .areas(area);
         let status_bar = ratatui_statusbar::StatusBar::default()
-            .section(0, "hello".into())
-            .section(1, "world".into());
-        frame.render_widget(status_bar, area);
+            .content(0, "hello".into())
+            .content(1, "world".into());
+        frame.render_widget(status_bar, bottom);
     })?;
 
     while !matches!(event::read()?, Event::Key(_)) {}
