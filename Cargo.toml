@@ -1,0 +1,18 @@
+[package]
+name = "ratatui-statusbar"
+version = "0.1.0"
+edition = "2021"
+authors = ["Dheepak Krishnamurthy"]
+description = "A statusbar widget for ratatui"
+license = "MIT"
+repository = "https://github.com/kdheepak/ratatui-statusbar"
+documentation = "https://docs.rs/ratatui-statusbar"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ratatui = "0.26.2"
+
+[dev-dependencies]
+color-eyre = "0.6.3"
+crossterm = "0.27.0"
