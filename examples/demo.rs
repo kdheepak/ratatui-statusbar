@@ -17,9 +17,11 @@ fn main() -> color_eyre::Result<()> {
         let [bottom] = Layout::vertical([Constraint::Length(1)])
             .flex(layout::Flex::End)
             .areas(area);
-        let status_bar = ratatui_statusbar::StatusBar::default()
+        let status_bar = ratatui_statusbar::StatusBar::new(2)
             .content(0, "hello".into())
-            .content(1, "world".into());
+            .unwrap()
+            .content(1, "world".into())
+            .unwrap();
         frame.render_widget(status_bar, bottom);
     })?;
 
