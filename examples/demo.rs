@@ -18,9 +18,9 @@ fn main() -> color_eyre::Result<()> {
             .flex(layout::Flex::End)
             .areas(area);
         let status_bar = ratatui_statusbar::StatusBar::new(2)
-            .content(0, "hello".into())
+            .section(0, "hello")
             .unwrap()
-            .content(1, "world".into())
+            .section(1, "world")
             .unwrap();
         frame.render_widget(status_bar, bottom);
     })?;

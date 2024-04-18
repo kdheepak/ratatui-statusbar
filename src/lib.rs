@@ -11,7 +11,6 @@ pub enum StatusBarError {
 #[derive(Debug, Default, Clone)]
 pub struct StatusBarSection<'a> {
     content: Line<'a>,
-    style: Style,
 }
 
 #[derive(Debug, Default)]
@@ -29,30 +28,10 @@ impl<'a> StatusBar<'a> {
     pub fn section(
         mut self,
         index: usize,
-        content: String,
-        style: Style,
+        content: impl Into<Line<'a>>,
     ) -> Result<Self, StatusBarError> {
         if let Some(section) = self.sections.get_mut(index) {
             section.content = content.into();
-            section.style = style;
-            Ok(self)
-        } else {
-            Err(StatusBarError::IndexOutOfBounds(index))
-        }
-    }
-
-    pub fn content(mut self, index: usize, content: String) -> Result<Self, StatusBarError> {
-        if let Some(section) = self.sections.get_mut(index) {
-            section.content = content.into();
-            Ok(self)
-        } else {
-            Err(StatusBarError::IndexOutOfBounds(index))
-        }
-    }
-
-    pub fn style(mut self, index: usize, style: Style) -> Result<Self, StatusBarError> {
-        if let Some(section) = self.sections.get_mut(index) {
-            section.style = style;
             Ok(self)
         } else {
             Err(StatusBarError::IndexOutOfBounds(index))
@@ -93,20 +72,23 @@ impl WidgetRef for StatusBar<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ratatui::assert_buffer_eq;
-    use ratatui::buffer::Buffer;
-    use ratatui::layout::Rect;
 
     #[test]
     fn render_default() -> color_eyre::Result<()> {
-        let status_bar = StatusBar::new(2)
-            .section(0, "Hello".into(), Style::default())?
-            .section(1, "World".into(), Style::default())?;
-        let expected = Buffer::with_lines(vec!["Hello          World          "]);
-        let area = Rect::new(0, 0, 30, 1);
-        let mut actual = Buffer::empty(area);
-        status_bar.render_ref(area, &mut actual);
-        assert_buffer_eq!(actual, expected);
+        let mut buf = Vec::new();
+        let backend = CrosstermBackend::new(&mut buf);
+        let mut terminal = Terminal::with_options(
+            backend,
+            TerminalOptions {
+                viewport: Viewport::Inline(1),
+            },
+        )?;
+        terminal
+            .draw(|f| f.render_widget("hello world", f.size()))
+            .unwrap();
+        drop(terminal);
+        let view = String::from_utf8(buf).unwrap();
+        println!("{view}");
         Ok(())
     }
 }

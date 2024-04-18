@@ -13,6 +13,7 @@ documentation = "https://docs.rs/ratatui-statusbar"
 [dependencies]
 ratatui = { version = "0.26.2", features = ["unstable-widget-ref"] }
 thiserror = "1.0.58"
+unicode-width = "0.1.11"
 
 [dev-dependencies]
 color-eyre = "0.6.3"
