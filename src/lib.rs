@@ -1,4 +1,4 @@
-//! # StatusBar Crate
+//! # `ratatui-statusbar` Crate
 //!
 //! This crate provides components for creating status bars within Ratatui applications.
 //!
@@ -12,7 +12,7 @@ use ratatui::prelude::*;
 use ratatui::widgets::WidgetRef;
 use thiserror::Error;
 
-/// An enumeration of potential errors that can impact the StatusBar operations.
+/// An enumeration of potential errors that can impact the [`StatusBar`] operations.
 #[derive(Error, Debug)]
 pub enum StatusBarError {
     /// The requested index does not exist.
@@ -20,7 +20,7 @@ pub enum StatusBarError {
     IndexOutOfBounds(usize),
 }
 
-/// A representation of a single section in a StatusBar
+/// A representation of a single section in a [`StatusBar`]
 /// including optional decorators (pre/post separators) around the content.
 ///
 /// # Examples
@@ -39,18 +39,21 @@ pub struct StatusBarSection<'a> {
 
 impl<'a> StatusBarSection<'a> {
     /// Associates a pre-separator with the section.
+    #[must_use]
     pub fn pre_separator(mut self, separator: impl Into<Span<'a>>) -> Self {
         self.pre_separator = Some(separator.into());
         self
     }
 
     /// Sets the main content of the section.
+    #[must_use]
     pub fn content(mut self, content: impl Into<Line<'a>>) -> Self {
         self.content = content.into();
         self
     }
 
     /// Associates a post-separator with the section.
+    #[must_use]
     pub fn post_separator(mut self, separator: impl Into<Span<'a>>) -> Self {
         self.post_separator = Some(separator.into());
         self
@@ -87,7 +90,7 @@ impl<'a> From<&'a str> for StatusBarSection<'a> {
     }
 }
 
-/// A customizable StatusBar that can contain multiple sections.
+/// A customizable [`StatusBar`] that can contain multiple sections.
 ///
 /// # Examples
 /// ```
@@ -106,29 +109,33 @@ pub struct StatusBar<'a> {
 }
 
 impl<'a> StatusBar<'a> {
-    /// Initializes a new StatusBar with a specified number of sections, all set to default.
+    /// Initializes a new [`StatusBar`] with a specified number of sections, all set to default.
+    #[must_use]
     pub fn new(nsections: usize) -> Self {
-        let sections = vec![StatusBarSection::default(); nsections];
         Self {
-            sections,
+            sections: vec![StatusBarSection::default(); nsections],
             flex: Flex::default(),
             spacing: 1,
         }
     }
 
-    /// Configures the flex layout mode of the sections in the StatusBar.
+    /// Configures the flex layout mode of the sections in the [`StatusBar`].
+    #[must_use]
     pub fn flex(mut self, flex: Flex) -> Self {
         self.flex = flex;
         self
     }
 
-    /// Sets the spacing between StatusBar sections.
+    /// Sets the spacing between [`StatusBar`] sections.
+    #[must_use]
     pub fn spacing(mut self, spacing: impl Into<u16>) -> Self {
         self.spacing = spacing.into();
         self
     }
 
-    /// Modifies a specific section within the StatusBar based on its index.
+    /// Modifies a specific section within the [`StatusBar`] based on its index.
+    ///
+    /// # Errors
     ///
     /// This function will return an error if the index is out of bounds, using the [`StatusBarError`] enum.
     pub fn section(
@@ -160,7 +167,7 @@ impl WidgetRef for StatusBar<'_> {
         let layout = Layout::horizontal(
             self.sections
                 .iter()
-                .map(|s| Constraint::Length(s.content.width() as u16)),
+                .map(|s| Constraint::Length(u16::try_from(s.content.width()).unwrap())),
         )
         .flex(self.flex)
         .spacing(self.spacing);
@@ -173,7 +180,7 @@ impl WidgetRef for StatusBar<'_> {
                 rect.left(),
                 rect.top(),
                 &section.content,
-                section.content.width() as u16,
+                u16::try_from(section.content.width()).unwrap(),
             );
         }
     }
