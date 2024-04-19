@@ -43,7 +43,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: check
-          args: --locked --verbose
+          args: --verbose
 
       - name: Check the lints
         uses: actions-rs/cargo@v1
