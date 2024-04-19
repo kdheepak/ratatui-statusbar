@@ -23,8 +23,8 @@ let status_bar = StatusBar::new(3)
 
 ## Contributing
 
-We welcome contributions! Please feel free to fork the repository, make your changes, and submit a pull request.
+Please feel free to fork the repository, make your changes, and submit a pull request.
 
 ## License
 
-StatusBar is distributed under the terms of the MIT license. See [LICENSE](LICENSE) for details.
+See [LICENSE](LICENSE) for details.
