@@ -1,15 +1,35 @@
+//! # StatusBar Crate
+//!
+//! This crate provides components for creating status bars within Ratatui applications.
+//!
+//! ## Features
+//! - Define status bar layouts with any number of sections
+//! - Customizable flex layout and spacing between sections
+
 use itertools::Itertools;
 use ratatui::layout::Flex;
 use ratatui::prelude::*;
 use ratatui::widgets::WidgetRef;
 use thiserror::Error;
 
+/// An enumeration of potential errors that can impact the StatusBar operations.
 #[derive(Error, Debug)]
 pub enum StatusBarError {
+    /// The requested index does not exist.
     #[error("Index out of bounds: {0}")]
     IndexOutOfBounds(usize),
 }
 
+/// A representation of a single section in a StatusBar
+/// including optional decorators (pre/post separators) around the content.
+///
+/// # Examples
+/// ```
+/// let section = StatusBarSection::default()
+///     .pre_separator(" | ")
+///     .content("Section Content")
+///     .post_separator(" | ");
+/// ```
 #[derive(Debug, Default, Clone)]
 pub struct StatusBarSection<'a> {
     pre_separator: Option<Span<'a>>,
@@ -18,16 +38,19 @@ pub struct StatusBarSection<'a> {
 }
 
 impl<'a> StatusBarSection<'a> {
+    /// Associates a pre-separator with the section.
     pub fn pre_separator(mut self, separator: impl Into<Span<'a>>) -> Self {
         self.pre_separator = Some(separator.into());
         self
     }
 
+    /// Sets the main content of the section.
     pub fn content(mut self, content: impl Into<Line<'a>>) -> Self {
         self.content = content.into();
         self
     }
 
+    /// Associates a post-separator with the section.
     pub fn post_separator(mut self, separator: impl Into<Span<'a>>) -> Self {
         self.post_separator = Some(separator.into());
         self
@@ -64,6 +87,17 @@ impl<'a> From<&'a str> for StatusBarSection<'a> {
     }
 }
 
+/// A customizable StatusBar that can contain multiple sections.
+///
+/// # Examples
+/// ```
+/// let status_bar = StatusBar::new(3)
+///     .flex(Flex::Center)
+///     .spacing(2)
+///     .section(0, "Left Section")?
+///     .section(1, "Center Section")?
+///     .section(2, "Right Section")?;
+/// ```
 #[derive(Debug, Default)]
 pub struct StatusBar<'a> {
     sections: Vec<StatusBarSection<'a>>,
@@ -72,25 +106,31 @@ pub struct StatusBar<'a> {
 }
 
 impl<'a> StatusBar<'a> {
+    /// Initializes a new StatusBar with a specified number of sections, all set to default.
     pub fn new(nsections: usize) -> Self {
         let sections = vec![StatusBarSection::default(); nsections];
         Self {
             sections,
-            flex: Flex::Start,
+            flex: Flex::default(),
             spacing: 1,
         }
     }
 
+    /// Configures the flex layout mode of the sections in the StatusBar.
     pub fn flex(mut self, flex: Flex) -> Self {
         self.flex = flex;
         self
     }
 
+    /// Sets the spacing between StatusBar sections.
     pub fn spacing(mut self, spacing: impl Into<u16>) -> Self {
         self.spacing = spacing.into();
         self
     }
 
+    /// Modifies a specific section within the StatusBar based on its index.
+    ///
+    /// This function will return an error if the index is out of bounds, using the [`StatusBarError`] enum.
     pub fn section(
         mut self,
         index: usize,
@@ -141,10 +181,12 @@ impl WidgetRef for StatusBar<'_> {
 
 #[cfg(test)]
 mod tests {
+    use ratatui::backend::TestBackend;
+
     use super::*;
 
     #[test]
-    fn render_default() -> color_eyre::Result<()> {
+    fn test_print_statusbar() -> color_eyre::Result<()> {
         let mut buf = Vec::new();
         let backend = CrosstermBackend::new(&mut buf);
         let mut terminal = Terminal::with_options(
@@ -160,6 +202,18 @@ mod tests {
         drop(terminal);
         let view = String::from_utf8(buf).unwrap();
         println!("{view}");
+        Ok(())
+    }
+
+    #[test]
+    fn render_default() -> color_eyre::Result<()> {
+        let area = Rect::new(0, 0, 15, 1);
+        let backend = TestBackend::new(area.width, area.height);
+        let status_bar = StatusBar::new(2).section(0, "hello")?.section(1, "world")?;
+        let mut terminal = Terminal::new(backend)?;
+        terminal.draw(|f| f.render_widget(status_bar, f.size()))?;
+        let expected = Buffer::with_lines(vec!["hello world    "]);
+        terminal.backend().assert_buffer(&expected);
         Ok(())
     }
 }
