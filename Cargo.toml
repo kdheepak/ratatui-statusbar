@@ -1,6 +1,6 @@
 [package]
 name = "ratatui-statusbar"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 authors = ["Dheepak Krishnamurthy"]
 description = "A statusbar widget for ratatui"
