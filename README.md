@@ -16,9 +16,9 @@ Creating a new status bar is simple. Here's a quick example:
 use status_bar::StatusBar;
 
 let status_bar = StatusBar::new(3)
-    .section(0, StatusBarSection::from("Left content"))?;
-    .section(1, StatusBarSection::from("Center content"))?;
-    .section(2, StatusBarSection::from("Right content"))?;
+    .section(0, "Left content")?;
+    .section(1, "Center content")?;
+    .section(2, "Right content")?;
 ```
 
 ## Contributing
