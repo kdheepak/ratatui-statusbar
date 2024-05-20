@@ -11,9 +11,9 @@ documentation = "https://docs.rs/ratatui-statusbar"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-itertools = "0.12.1"
-ratatui = { version = "0.26.2", features = ["unstable-widget-ref"] }
-thiserror = "1.0.60"
+itertools = "0.13.0"
+ratatui = { version = "0.26.3", features = ["unstable-widget-ref"] }
+thiserror = "1.0.61"
 unicode-width = "0.1.12"
 
 [dev-dependencies]
