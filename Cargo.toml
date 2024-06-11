@@ -14,7 +14,7 @@ documentation = "https://docs.rs/ratatui-statusbar"
 itertools = "0.13.0"
 ratatui = { version = "0.26.3", features = ["unstable-widget-ref"] }
 thiserror = "1.0.61"
-unicode-width = "0.1.12"
+unicode-width = "0.1.13"
 
 [dev-dependencies]
 color-eyre = "0.6.3"
