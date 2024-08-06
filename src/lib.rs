@@ -24,7 +24,9 @@ pub enum StatusBarError {
 /// including optional decorators (pre/post separators) around the content.
 ///
 /// # Examples
+///
 /// ```
+/// use ratatui_statusbar::StatusBarSection;
 /// let section = StatusBarSection::default()
 ///     .pre_separator(" | ")
 ///     .content("Section Content")
@@ -93,13 +95,15 @@ impl<'a> From<&'a str> for StatusBarSection<'a> {
 /// A customizable [`StatusBar`] that can contain multiple sections.
 ///
 /// # Examples
+///
 /// ```
+/// use ratatui_statusbar::StatusBar;
 /// let status_bar = StatusBar::new(3)
-///     .flex(Flex::Center)
-///     .spacing(2)
-///     .section(0, "Left Section")?
-///     .section(1, "Center Section")?
-///     .section(2, "Right Section")?;
+///     .flex(ratatui::layout::Flex::Center)
+///     .spacing(2 as u16)
+///     .section(0, "Left Section").unwrap()
+///     .section(1, "Center Section").unwrap()
+///     .section(2, "Right Section").unwrap();
 /// ```
 #[derive(Debug, Default)]
 pub struct StatusBar<'a> {
@@ -198,8 +202,8 @@ mod tests {
         let backend = CrosstermBackend::new(&mut buf);
         let mut terminal = Terminal::with_options(
             backend,
-            TerminalOptions {
-                viewport: Viewport::Inline(1),
+            ratatui::TerminalOptions {
+                viewport: ratatui::Viewport::Inline(1),
             },
         )?;
         let status_bar = StatusBar::new(2).section(0, "hello")?.section(1, "world")?;
