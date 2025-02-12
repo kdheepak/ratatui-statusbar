@@ -13,7 +13,7 @@ cargo add ratatui-statusbar
 Creating a new status bar is simple. Here's a quick example:
 
 ```rust
-use status_bar::StatusBar;
+use ratatui_statusbar::StatusBar;
 
 let status_bar = StatusBar::new(3)
     .section(0, "Left content")?;
